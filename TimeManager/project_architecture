@@ -1,0 +1,17 @@
+Dossier : /home/projects/TimeManager/
+
+App : time_manager
+
+	Module : Todolist
+		Schema : User
+		Nom table : users
+			user_id			int		PK
+			first_name		string
+			last_name		string
+
+		Schema : Task
+			Nom table : tasks
+				title_task		string
+				description		string
+				status			boolean
+				user			int		FK
