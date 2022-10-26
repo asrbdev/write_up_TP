@@ -1,0 +1,73 @@
+#######################################################################################
+##_## PostgreSQL
+#######################################################################################
+sudo apt-get install postgresql postgresql-contrib
+sudo cp -v /etc/postgresql/12/main/pg_hba.conf /etc/postgresql/12/main/pg_hba.conf_original
+sudo -u postgres psql
+
+\du
+ALTER USER postgres WITH PASSWORD 'postgres';
+CREATE USER db_admin WITH PASSWORD 'db_admin';
+ALTER USER db_admin WITH SUPERUSER;
+\du
+CREATE DATABASE lipsum;
+\l
+GRANT ALL ON DATABASE lipsum TO db_admin;
+commit;
+\q
+
+sudo nano /etc/postgresql/12/main/pg_hba.conf
+
+
+sudo systemctl stop postgresql
+sudo systemctl status postgresql
+sudo systemctl start postgresql
+psql --username=postgres
+
+\q
+
+sudo cp -v /etc/postgresql/12/main/pg_hba.conf /etc/postgresql/12/main/pg_hba.conf_save
+
+
+
+#######################################################################################
+##_## Elixir & Phoenix
+#######################################################################################
+wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb && sudo dpkg -i erlang-solutions_2.0_all.deb
+
+sudo apt-get update
+sudo apt-get install esl-erlang
+sudo apt-get install elixir
+
+elixir -v
+mix archive.install hex phx_new
+
+mkdir -vp spaces/apps/api
+cd spaces/apps/api
+
+mix phx.new TimeManager --app time_manager --module Todolist --no-html
+cd TimeManager/
+cp -v config/dev.exs config/dev.exs_original
+nano config/dev.exs
+mix ecto.create
+
+##_## Now the project is created and linked to the postgreSQL database
+
+#Schemas users & tasks
+mix phx.gen.schema Todolist users user user_id:integer:unique first_name:string last_name:string
+mix phx.gen.schema Todolist tasks task title:string description:string status:boolean user:references:user
+
+mix ecto.create
+
+
+
+# Run app
+mix phx.server
+
+
+
+#######################################################################################
+##_## 
+#######################################################################################
+
+
